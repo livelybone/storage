@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocalStorage</title>
+  <script src="../lib/umd/index.js"></script>
+</head>
+<body>
+<div>key is: <span id="key"></span></div>
+<button onclick="">set key as local-storage</button>
+
+<script>
+var storage = new Storage.LocalStorage()
+
+getKey()
+
+function getKey() {
+  document.getElementById('key').innerText = storage.get('key')
+  console.log(storage.get('key'))
+}
+
+function setKey() {
+  storage.set('key', 'local-storage')
+  getKey()
+}
+
+function delKey() {
+  storage.delete('key')
+  getKey()
+}
+</script>
+</body>
+</html>

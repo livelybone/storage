@@ -1,0 +1,46 @@
+{
+  "name": "@livelybone/localStorage",
+  "version": "1.0.0",
+  "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or cache",
+  "main": "./lib/umd/index.js",
+  "module": "./lib/es/index.js",
+  "unpkg": "./lib/umd/index.js",
+  "scripts": {
+    "build": "rimraf ./lib && cross-env NODE_ENV=production rollup -c",
+    "eslint": "eslint ./src",
+    "test": "npm run build && mocha ./test/index.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/livelybone/localStorage.git"
+  },
+  "keywords": [
+    "localStorage",
+    "cookie",
+    "cache",
+    "ie",
+    "safari"
+  ],
+  "author": "livelybone(2631541504@qq.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/livelybone/localStorage/issues"
+  },
+  "homepage": "https://github.com/livelybone/localStorage#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^9.0.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "mocha": "^5.2.0",
+    "rollup": "^0.65.0",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-uglify": "^5.0.2"
+  }
+}
