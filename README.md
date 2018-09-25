@@ -6,7 +6,9 @@
 
 > `pkg.module supported`, which means that you can apply tree-shaking in you project
 
-A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or cache
+A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map
+
+> You may need a polyfill for Map like babel-polyfill if you use it in `ie` browser
 
 ## repository
 https://github.com/livelybone/localStorage.git

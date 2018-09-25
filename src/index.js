@@ -1,16 +1,5 @@
 import Cookie from './Cookie'
-
-function storageAvailable() {
-  const storage = window.localStorage
-  try {
-    const x = 'key'
-    storage.setItem(x, x)
-    storage.removeItem(x)
-    return true
-  } catch (e) {
-    return false
-  }
-}
+import { isJSON, storageAvailable } from './utils'
 
 export { Cookie }
 
@@ -34,7 +23,7 @@ export class LocalStorage {
     if (!val) this.delete(key)
     try {
       if (this.storageSupport) {
-        const value = val instanceof Object ? JSON.stringify(val) : val
+        const value = JSON.stringify(val)
         localStorage.setItem(key, value)
       } else {
         this.storage.set(key, val)
@@ -46,7 +35,9 @@ export class LocalStorage {
 
   get(key) {
     if (this.storageSupport) {
-      return localStorage.getItem(key)
+      const val = localStorage.getItem(key)
+      const res = isJSON(val)
+      return res ? res.value : val
     }
     return this.storage.get(key)
   }

@@ -1,7 +1,7 @@
 {
   "name": "@livelybone/localStorage",
   "version": "1.0.0",
-  "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or cache",
+  "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
   "unpkg": "./lib/umd/index.js",
@@ -17,7 +17,7 @@
   "keywords": [
     "localStorage",
     "cookie",
-    "cache",
+    "Map",
     "ie",
     "safari"
   ],

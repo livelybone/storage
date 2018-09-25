@@ -10,7 +10,7 @@ const formats = ['es', 'umd']
 function getEntries() {
   const reg = /\.js$/
   return fs.readdirSync(path.resolve(__dirname, './src'))
-    .filter(filename => reg.test(filename) && !fs.statSync(path.resolve(__dirname, './src', filename)).isDirectory())
+    .filter(filename => reg.test(filename) && filename !== 'utils.js' && !fs.statSync(path.resolve(__dirname, './src', filename)).isDirectory())
     .map(filename => ({
       name: filename.replace(reg, ''),
       filename: path.resolve(__dirname, './src', filename),

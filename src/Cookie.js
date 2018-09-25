@@ -1,3 +1,5 @@
+import { isJSON } from './utils'
+
 export default class Cookie {
   static get size() {
     return document.cookie.match(/[^\s=;]+(?==)/g).length
@@ -5,8 +7,8 @@ export default class Cookie {
 
   static set(key, val, isSessionLevel) {
     const exp = new Date()
-    const value = val instanceof Object ? JSON.stringify(val) : val
-    let cookie = `${key}=${encodeURIComponent(value)}`
+    const value = JSON.stringify(typeof val === 'string' ? encodeURIComponent(val) : val)
+    let cookie = `${key}=${value}`
     if (!isSessionLevel) { // 如果不是会话级（会话级的cookie，关闭浏览器则过期），则设置过期时间
       const Days = 1
       exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000) // 一天之后过时，失效
@@ -19,9 +21,17 @@ export default class Cookie {
     const reg = new RegExp(`(^| )${key}=([^;]*)(;|$)`)
     const arr = document.cookie.match(reg)
     if (arr) {
-      return decodeURIComponent(arr[2])
+      let v = arr[2]
+      const val = isJSON(v)
+      if (val) v = val.value
+      return typeof v === 'string' ? decodeURIComponent(v) : v
     }
     return null
+  }
+
+  static getAll() {
+    const keys = document.cookie.match(/[^\s=;]+(?==)/g)
+    return keys.map(key => ({ key, value: this.get(key) }))
   }
 
   static has(key) {
