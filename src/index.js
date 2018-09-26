@@ -1,71 +1,20 @@
 import Cookie from './Cookie'
-import { isJSON, storageAvailable } from './utils'
+import LocalStorage from './LocalStorage'
+import { storageAvailable } from './utils'
 
-export { Cookie }
+export { Cookie, LocalStorage }
 
-export class LocalStorage {
-  constructor(useCookie, storageHandler) {
-    if (typeof window !== 'undefined') {
-      this.storage = useCookie ? Cookie : new Map()
-      this.storageSupport = storageAvailable()
-      if (storageHandler) {
-        if (storageHandler instanceof Function) {
-          this.listener = e => storageHandler(e)
-          window.addEventListener('storage', this.listener)
-        } else {
-          throw new Error('Parameter `storageHandler` should be a function')
-        }
-      }
-    }
-  }
-
-  set(key, val) {
-    if (!val) this.delete(key)
-    try {
-      if (this.storageSupport) {
-        const value = JSON.stringify(val)
-        localStorage.setItem(key, value)
-      } else {
-        this.storage.set(key, val)
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  get(key) {
-    if (this.storageSupport) {
-      const val = localStorage.getItem(key)
-      const res = isJSON(val)
-      return res ? res.value : val
-    }
-    return this.storage.get(key)
-  }
-
-  has(key) {
-    if (this.storageSupport) {
-      return localStorage.getItem(key) !== null
-    }
-    return this.storage.has(key)
-  }
-
-  delete(key) {
-    if (this.storageSupport) {
-      localStorage.removeItem(key)
+export class Storage {
+  constructor(useCookie) {
+    let storage = null
+    if (storageAvailable()) {
+      storage = LocalStorage
     } else {
-      this.storage.delete(key)
+      console.warn('The Object localStorage isn\'t supported in your browser, methods `addHandler` and `removeHandler` will do nothing when you call it')
+      storage = useCookie ? Cookie : new Map()
+      storage.addHandler = () => null
+      storage.removeHandler = () => null
     }
-  }
-
-  clear() {
-    if (this.storageSupport) {
-      localStorage.clear()
-    } else {
-      this.storage.clear()
-    }
-  }
-
-  removeHandler() {
-    if (this.listener) window.removeEventListener('storage', this.listener)
+    return storage
   }
 }

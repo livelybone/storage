@@ -1,9 +1,8 @@
-export function isJSON(val) {
+export function JSONParse(val) {
   try {
-    const value = JSON.parse(val)
-    return { value }
+    return JSON.parse(val)
   } catch (e) {
-    return false
+    return val
   }
 }
 

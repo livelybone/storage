@@ -1,5 +1,5 @@
 {
-  "name": "@livelybone/localStorage",
+  "name": "@livelybone/storage",
   "version": "1.0.0",
   "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
@@ -19,7 +19,8 @@
     "cookie",
     "Map",
     "ie",
-    "safari"
+    "safari",
+    "storage event"
   ],
   "author": "livelybone(2631541504@qq.com)",
   "license": "MIT",

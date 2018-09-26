@@ -1,8 +1,24 @@
-import { isJSON } from './utils'
+import { JSONParse } from './utils'
 
 export default class Cookie {
   static get size() {
-    return document.cookie.match(/[^\s=;]+(?==)/g).length
+    return this.keys().length
+  }
+
+  static keys() {
+    return document.cookie.match(/[^\s=;]+(?==)/g)
+  }
+
+  static values() {
+    return this.keys().map(key => this.get(key))
+  }
+
+  static entries() {
+    return this.keys().map(key => ({ key, value: this.get(key) }))
+  }
+
+  static forEach(callback) {
+    this.keys.forEach(key => callback(key, this.get(key), this))
   }
 
   static set(key, val, isSessionLevel) {
@@ -21,22 +37,14 @@ export default class Cookie {
     const reg = new RegExp(`(^| )${key}=([^;]*)(;|$)`)
     const arr = document.cookie.match(reg)
     if (arr) {
-      let v = arr[2]
-      const val = isJSON(v)
-      if (val) v = val.value
-      return typeof v === 'string' ? decodeURIComponent(v) : v
+      const val = JSONParse(arr[2])
+      return typeof val === 'string' ? decodeURIComponent(val) : val
     }
     return null
   }
 
-  static getAll() {
-    const keys = document.cookie.match(/[^\s=;]+(?==)/g)
-    return keys.map(key => ({ key, value: this.get(key) }))
-  }
-
   static has(key) {
-    const keys = document.cookie.match(/[^\s=;]+(?==)/g)
-    return keys.some(k => k === key)
+    return this.keys().some(k => k === key)
   }
 
   static delete(key) {
@@ -49,8 +57,7 @@ export default class Cookie {
   }
 
   static clear() {
-    const keys = document.cookie.match(/[^\s=;]+(?==)/g)
-    keys.forEach((key) => {
+    this.keys().forEach((key) => {
       this.delete(key)
     })
   }
