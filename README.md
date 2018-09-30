@@ -28,7 +28,7 @@ npm i -S @livelybone/storage
 ```js
 /**
  * @import Cookie, a purely wrapper of Cookie
- * @import Storage, a wrapper of HTML5 localStorage with Cookie and Map
+ * @import Storage, a wrapper of HTML5 localStorage dealt with Cookie or Map (Map default)
  * @import LocalStorage, a purely wrapper of  HTML5 localStorage
  * */
 import {Cookie, Storage, LocalStorage} from '@livelybone/storage';
