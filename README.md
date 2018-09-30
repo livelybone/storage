@@ -67,7 +67,7 @@ Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone
 > `forEach` `(callback:(key, value, instance|class)=>void)=>void`
 
 ### Storage | LocalStorage
-> `addHandler` `(handler:({event, key, oldValue, newValue})=>any)=>wrappedHandler>`
+> `addHandler` `(handler:({event, key, oldValue, newValue})=>any)=>wrappedHandler`
 
 > `removeHandler` `(handlers: Array<wrappedHandler>)=>void`
 
