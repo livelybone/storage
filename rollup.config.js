@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
+import license from 'rollup-plugin-license'
 import resolve from 'rollup-plugin-node-resolve'
 import { uglify } from 'rollup-plugin-uglify'
 
@@ -41,6 +42,13 @@ const conf = entry => ({
       ],
     }),
     (entry.needUglify !== false && uglify()),
+    license({
+      banner: `Bundle of <%= pkg.name %>
+               Generated: <%= moment().format('YYYY-MM-DD') %>
+               Version: <%= pkg.version %>
+               License: <%= pkg.license %>
+               Author: <%= pkg.author %>`,
+    }),
   ],
 })
 

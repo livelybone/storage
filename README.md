@@ -8,13 +8,18 @@
 
 A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map
 
-> You may need a polyfill for Map like babel-polyfill if you use it in `ie` browser
+You can store Objects directly like `{a: 1, b: '1'}`, `1`, `'true'`, `true`
+
+Before store, this module will stringify the value you set (use `JSON.stringify`).
+Before return, it will parse(use `JSON.parse`) the value which you want get
+
+> You may need a polyfill for `Map` like babel-polyfill if you use it in `ie` browser
 
 ## repository
 https://github.com/livelybone/localStorage.git
 
 ## Demo
-http://livelybone.github.io/@livelybone/storage/
+http://livelybone.github.io/tool/storage
 
 ## Installation
 ```bash
@@ -48,28 +53,28 @@ Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone
 ```
 
 ## Methods
-> `get` `(key)=>[Number, String, Object, Boolean]`
+> `get`: `(key) => [Number, String, Object, Boolean]`
 
-> `set` `(key,value:[Number, String, Object, Boolean])=>void`
+> `set`: `(key,value:[Number, String, Object, Boolean]) => void`
 
-> `delete` `(key)=>void`
+> `delete`: `(key) => void`
 
-> `clear` `()=>void`
+> `clear`: `() => void`
 
-> `has` `(key)=>Boolean`
+> `has`: `(key) => Boolean`
 
-> `keys` `()=>Array<String>`
+> `keys`: `() => Array<String>`
 
-> `values` `()=>Array<Number, String, Object, Boolean>`
+> `values`: `() => Array<Number, String, Object, Boolean>`
 
-> `entries` `()=>Array<{key, value}>`
+> `entries`: `() => Array<{key, value}>`
 
-> `forEach` `(callback:(key, value, instance|class)=>void)=>void`
+> `forEach`: `(callback:(key, value, instance|class) => void) => void`
 
 ### Storage | LocalStorage
-> `addHandler` `(handler:({event, key, oldValue, newValue})=>any)=>wrappedHandler`
+> `addHandler`: `(handler: ({event, key, oldValue, newValue}) => any) => wrappedHandler`
 
-> `removeHandler` `(handlers: Array<wrappedHandler>)=>void`
+> `removeHandler`: `(handlers: Array<wrappedHandler>) => void`
 
 ## Attributes
 

@@ -1,6 +1,6 @@
 {
   "name": "@livelybone/storage",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
@@ -41,6 +41,7 @@
     "rollup": "^0.65.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-license": "^0.7.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-uglify": "^5.0.2"
   }
