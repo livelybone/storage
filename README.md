@@ -19,7 +19,7 @@ Before return, it will parse(use `JSON.parse`) the value which you want get
 https://github.com/livelybone/localStorage.git
 
 ## Demo
-http://livelybone.github.io/tool/storage
+http://livelybone.github.io/tool/storage/
 
 ## Installation
 ```bash

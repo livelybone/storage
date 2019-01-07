@@ -1,6 +1,6 @@
 {
   "name": "@livelybone/storage",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/livelybone/localStorage/issues"
   },
-  "homepage": "https://github.com/livelybone/localStorage#readme",
+  "homepage": "http://livelybone.github.io/tool/storage/",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^9.0.0",
