@@ -3,6 +3,7 @@
 [![Download Month](http://img.shields.io/npm/dm/@livelybone/storage.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/storage)
 ![gzip with dependencies: 1kb](https://img.shields.io/badge/gzip--with--dependencies-1kb-brightgreen.svg "gzip with dependencies: 1kb")
 ![pkg.module](https://img.shields.io/badge/pkg.module-supported-blue.svg "pkg.module")
+![ssr supported](https://img.shields.io/badge/ssr-supported-blue.svg "ssr supported")
 
 > `pkg.module supported`, which means that you can apply tree-shaking in you project
 

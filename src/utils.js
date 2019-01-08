@@ -7,8 +7,8 @@ export function JSONParse(val) {
 }
 
 export function storageAvailable() {
-  const storage = window.localStorage
   try {
+    const storage = window.localStorage
     const x = 'key'
     storage.setItem(x, x)
     storage.removeItem(x)
