@@ -1,6 +1,6 @@
 import Cookie from './Cookie'
 import LocalStorage from './LocalStorage'
-import { storageAvailable } from './utils'
+import { cookieAvailable, storageAvailable } from './utils'
 
 export { Cookie, LocalStorage }
 
@@ -11,7 +11,7 @@ export class Storage {
       storage = LocalStorage
     } else {
       console.warn('The Object localStorage isn\'t supported in your client, methods `addHandler` and `removeHandler` will do nothing when you call it')
-      storage = useCookie ? Cookie : new Map()
+      storage = useCookie && cookieAvailable() ? Cookie : new Map()
       storage.addHandler = () => null
       storage.removeHandler = () => null
     }

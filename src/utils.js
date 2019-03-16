@@ -17,3 +17,11 @@ export function storageAvailable() {
     return false
   }
 }
+
+export function cookieAvailable() {
+  try {
+    return document.cookie || true
+  } catch (e) {
+    return false
+  }
+}
