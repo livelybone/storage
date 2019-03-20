@@ -20,11 +20,13 @@ export default class LocalStorage {
       window.addEventListener('storage', handler)
       return handler
     }
-    throw new Error('Parameter `storageHandler` should be a function')
+    return console.warn('(LocalStorage) Handler add failed: Parameter `storageHandler` should be a function')
   }
 
   static removeHandler(handlers) {
-    const remove = handler => (handler instanceof Function ? window.removeEventListener('storage', handler) : '')
+    const remove = handler => (
+      handler instanceof Function ? window.removeEventListener('storage', handler) : ''
+    )
     if (handlers instanceof Array) {
       handlers.forEach(remove)
     } else {
@@ -41,11 +43,11 @@ export default class LocalStorage {
   }
 
   static entries() {
-    return this.keys().map(key => ({ key, value: this.get(key) }))
+    return this.keys().map(key => ([key, this.get(key)]))
   }
 
   static forEach(callback) {
-    this.keys.forEach(key => callback(key, this.get(key), this))
+    this.keys.forEach(key => callback(this.get(key), key, this))
   }
 
   static set(key, val) {

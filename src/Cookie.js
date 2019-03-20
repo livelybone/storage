@@ -2,7 +2,7 @@ import { JSONParse } from './utils'
 
 export default class Cookie {
   static get size() {
-    return this.keys().length
+    return Cookie.keys().length
   }
 
   static keys() {
@@ -10,26 +10,37 @@ export default class Cookie {
   }
 
   static values() {
-    return this.keys().map(key => this.get(key))
+    return Cookie.keys().map(key => Cookie.get(key))
   }
 
   static entries() {
-    return this.keys().map(key => ({ key, value: this.get(key) }))
+    return Cookie.keys().map(key => ([key, Cookie.get(key)]))
   }
 
   static forEach(callback) {
-    this.keys.forEach(key => callback(key, this.get(key), this))
+    Cookie.keys.forEach(key => callback(Cookie.get(key), key, Cookie))
   }
 
-  static set(key, val, isSessionLevel) {
-    const exp = new Date()
+  static set(key, val, { maxAgeMs = 'Infinity', domain, secure, path } = {}) {
     const value = JSON.stringify(typeof val === 'string' ? encodeURIComponent(val) : val)
     let cookie = `${key}=${value}`
-    if (!isSessionLevel) { // 如果不是会话级（会话级的cookie，关闭浏览器则过期），则设置过期时间
-      const Days = 1
-      exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000) // 一天之后过时，失效
-      cookie += `;expires=${exp.toUTCString()}`
+
+    const isSessionLevel = !maxAgeMs
+
+    if (!isSessionLevel) {
+      const exp = new Date()
+      // Expired after {ms}ms
+      const ms = maxAgeMs === 'Infinity' ? 365 * 24 * 60 * 60 * 1000 : +maxAgeMs
+      exp.setTime(exp.getTime() + ms)
+      const expires = exp.toUTCString()
+
+      // set expires, path, domain and secure of cookie
+      cookie += `;expires=${expires}`
     }
+
+    cookie += `;path=${path || '/'}`
+    if (domain) cookie += `;domain=${domain}`
+    if (secure) cookie += `;secure=${secure ? 'secure' : ''}`
     document.cookie = cookie
   }
 
@@ -44,21 +55,16 @@ export default class Cookie {
   }
 
   static has(key) {
-    return this.keys().some(k => k === key)
+    return Cookie.keys().some(k => k === key)
   }
 
   static delete(key) {
-    const exp = new Date()
-    exp.setTime(exp.getTime() - 1)
-    const val = Cookie.get(key)
-    if (val !== null) {
-      document.cookie = `${key}=${val};expires=${exp.toUTCString()}`
-    }
+    Cookie.set(key, Cookie.get(key), { maxAgeMs: -1 })
   }
 
   static clear() {
-    this.keys().forEach((key) => {
-      this.delete(key)
+    Cookie.keys().forEach((key) => {
+      Cookie.delete(key)
     })
   }
 }

@@ -1,7 +1,7 @@
 # @livelybone/storage
 [![NPM Version](http://img.shields.io/npm/v/@livelybone/storage.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/storage)
 [![Download Month](http://img.shields.io/npm/dm/@livelybone/storage.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/storage)
-![gzip with dependencies: 1.3kb](https://img.shields.io/badge/gzip--with--dependencies-1.3kb-brightgreen.svg "gzip with dependencies: 1.3kb")
+![gzip with dependencies: 1.4kb](https://img.shields.io/badge/gzip--with--dependencies-1.4kb-brightgreen.svg "gzip with dependencies: 1.4kb")
 ![pkg.module](https://img.shields.io/badge/pkg.module-supported-blue.svg "pkg.module")
 ![ssr supported](https://img.shields.io/badge/ssr-supported-blue.svg "ssr supported")
 

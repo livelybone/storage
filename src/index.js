@@ -13,7 +13,7 @@ export class Storage {
       const $cookieAvailable = cookieAvailable()
       if ($cookieAvailable) {
         console.warn(
-          'The Object localStorage isn\'t supported in your client,'
+          '(Storage) The Object localStorage isn\'t supported in your client,'
           + ' methods `addHandler` and `removeHandler` will do nothing when you call it',
         )
       }
