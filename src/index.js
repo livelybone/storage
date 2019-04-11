@@ -1,26 +1,41 @@
+/* eslint-disable no-param-reassign */
 import Cookie from './Cookie'
 import LocalStorage from './LocalStorage'
 import { cookieAvailable, storageAvailable } from './utils'
 
 export { Cookie, LocalStorage }
 
+function convertStorage(storage) {
+  storage.addHandler = () => null
+  storage.removeHandler = () => null
+  return storage
+}
+
 export class Storage {
+  /**
+   * @param {Boolean}   useCookie   Use cookie or not
+   * */
   constructor(useCookie) {
-    let storage = null
     if (storageAvailable()) {
-      storage = LocalStorage
-    } else {
+      return LocalStorage
+    }
+
+    if (typeof window !== 'undefined') {
+      console.warn(
+        '(Storage) The Object localStorage isn\'t supported in your client,'
+        + ' methods `addHandler` and `removeHandler` will do nothing when you call it',
+      )
+    }
+
+    // Fallback to use Cookie if useCookie is true
+    if (useCookie) {
       const $cookieAvailable = cookieAvailable()
       if ($cookieAvailable) {
-        console.warn(
-          '(Storage) The Object localStorage isn\'t supported in your client,'
-          + ' methods `addHandler` and `removeHandler` will do nothing when you call it',
-        )
+        return convertStorage(Cookie)
       }
-      storage = useCookie && $cookieAvailable ? Cookie : new Map()
-      storage.addHandler = () => null
-      storage.removeHandler = () => null
     }
-    return storage
+
+    // Fallback to use Map
+    return convertStorage(new Map())
   }
 }

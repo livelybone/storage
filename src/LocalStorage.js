@@ -2,36 +2,7 @@ import { JSONParse } from './utils'
 
 export default class LocalStorage {
   static get size() {
-    return this.keys().length
-  }
-
-  static addHandler(storageHandler) {
-    if (!storageHandler) return null
-
-    if (storageHandler instanceof Function) {
-      const handler = (e) => {
-        storageHandler({
-          key: e.key,
-          oldValue: JSONParse(e.oldValue),
-          newValue: JSONParse(e.newValue),
-          event: e,
-        })
-      }
-      window.addEventListener('storage', handler)
-      return handler
-    }
-    return console.warn('(LocalStorage) Handler add failed: Parameter `storageHandler` should be a function')
-  }
-
-  static removeHandler(handlers) {
-    const remove = handler => (
-      handler instanceof Function ? window.removeEventListener('storage', handler) : ''
-    )
-    if (handlers instanceof Array) {
-      handlers.forEach(remove)
-    } else {
-      remove(handlers)
-    }
+    return LocalStorage.keys().length
   }
 
   static keys() {
@@ -39,19 +10,19 @@ export default class LocalStorage {
   }
 
   static values() {
-    return this.keys().map(key => this.get(key))
+    return LocalStorage.keys().map(key => LocalStorage.get(key))
   }
 
   static entries() {
-    return this.keys().map(key => ([key, this.get(key)]))
+    return LocalStorage.keys().map(key => ([key, LocalStorage.get(key)]))
   }
 
   static forEach(callback) {
-    this.keys.forEach(key => callback(this.get(key), key, this))
+    LocalStorage.keys.forEach(key => callback(LocalStorage.get(key), key, LocalStorage))
   }
 
   static set(key, val) {
-    if (!val) this.delete(key)
+    if (!val) LocalStorage.delete(key)
     const value = JSON.stringify(val)
     localStorage.setItem(key, value)
   }
@@ -70,5 +41,38 @@ export default class LocalStorage {
 
   static clear() {
     localStorage.clear()
+  }
+
+  static addHandler(storageHandler) {
+    if (storageHandler instanceof Function) {
+      const handler = (e) => {
+        storageHandler({
+          key: e.key,
+          oldValue: JSONParse(e.oldValue),
+          newValue: JSONParse(e.newValue),
+          event: e,
+        })
+      }
+      window.addEventListener('storage', handler)
+      return handler
+    }
+
+    console.warn(
+      '(LocalStorage) Handler add failed:'
+      + ' Parameter `storageHandler` should be a function',
+    )
+    return null
+  }
+
+  static removeHandler(handlers) {
+    const remove = handler => (
+      handler instanceof Function
+        ? window.removeEventListener('storage', handler) : ''
+    )
+    if (handlers instanceof Array) {
+      handlers.forEach(remove)
+    } else {
+      remove(handlers)
+    }
   }
 }
