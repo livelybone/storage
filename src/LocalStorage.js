@@ -1,4 +1,4 @@
-import { JSONParse } from './utils'
+import { parseJSON, stringifyJSON } from './utils'
 
 export default class LocalStorage {
   static get size() {
@@ -22,13 +22,12 @@ export default class LocalStorage {
   }
 
   static set(key, val) {
-    if (!val) LocalStorage.delete(key)
-    const value = JSON.stringify(val)
+    const value = stringifyJSON(val)
     localStorage.setItem(key, value)
   }
 
   static get(key) {
-    return JSONParse(localStorage.getItem(key))
+    return parseJSON(localStorage.getItem(key))
   }
 
   static has(key) {
@@ -36,7 +35,12 @@ export default class LocalStorage {
   }
 
   static delete(key) {
-    localStorage.removeItem(key)
+    const has = LocalStorage.has(key)
+    if (has) {
+      localStorage.removeItem(key)
+      return true
+    }
+    return false
   }
 
   static clear() {
@@ -44,35 +48,39 @@ export default class LocalStorage {
   }
 
   static addHandler(storageHandler) {
-    if (storageHandler instanceof Function) {
-      const handler = (e) => {
-        storageHandler({
-          key: e.key,
-          oldValue: JSONParse(e.oldValue),
-          newValue: JSONParse(e.newValue),
-          event: e,
-        })
+    if (window.addEventListener) {
+      if (storageHandler instanceof Function) {
+        const handler = (e) => {
+          storageHandler({
+            key: e.key,
+            oldValue: parseJSON(e.oldValue),
+            newValue: parseJSON(e.newValue),
+            event: e,
+          })
+        }
+        window.addEventListener('storage', handler)
+        return handler
       }
-      window.addEventListener('storage', handler)
-      return handler
-    }
 
-    console.warn(
-      '(LocalStorage) Handler add failed:'
-      + ' Parameter `storageHandler` should be a function',
-    )
+      console.warn(
+        '(LocalStorage) Handler add failed:'
+        + ' Parameter `storageHandler` should be a function',
+      )
+    }
     return null
   }
 
   static removeHandler(handlers) {
-    const remove = handler => (
-      handler instanceof Function
-        ? window.removeEventListener('storage', handler) : ''
-    )
-    if (handlers instanceof Array) {
-      handlers.forEach(remove)
-    } else {
-      remove(handlers)
+    if (window.removeEventListener) {
+      const remove = handler => (
+        handler instanceof Function
+          ? window.removeEventListener('storage', handler) : ''
+      )
+      if (handlers instanceof Array) {
+        handlers.forEach(remove)
+      } else {
+        remove(handlers)
+      }
     }
   }
 }

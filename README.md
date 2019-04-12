@@ -1,7 +1,7 @@
 # @livelybone/storage
 [![NPM Version](http://img.shields.io/npm/v/@livelybone/storage.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/storage)
 [![Download Month](http://img.shields.io/npm/dm/@livelybone/storage.svg?style=flat-square)](https://www.npmjs.com/package/@livelybone/storage)
-![gzip with dependencies: 1.4kb](https://img.shields.io/badge/gzip--with--dependencies-1.4kb-brightgreen.svg "gzip with dependencies: 1.4kb")
+![gzip with dependencies: 1.7kb](https://img.shields.io/badge/gzip--with--dependencies-1.7kb-brightgreen.svg "gzip with dependencies: 1.7kb")
 ![pkg.module](https://img.shields.io/badge/pkg.module-supported-blue.svg "pkg.module")
 ![ssr supported](https://img.shields.io/badge/ssr-supported-blue.svg "ssr supported")
 
@@ -38,6 +38,39 @@ npm i -S @livelybone/storage
  * @import LocalStorage, a purely wrapper of  HTML5 localStorage
  * */
 import {Cookie, Storage, LocalStorage} from '@livelybone/storage';
+
+Cookie.set('key', 'value')
+Cookie.get('key')
+Cookie.keys()
+Cookie.forEach(callback)
+// ...
+
+LocalStorage.set('key', 'value')
+LocalStorage.get('key')
+LocalStorage.keys()
+LocalStorage.forEach(callback)
+// ...
+
+const useCookie = true
+const exceededCallback = null
+
+/**
+ * @typedef   { Function }          ExceededCallback
+ * @param     { Error }             error
+ * @param     { Array }             params              params[0] => key; params[1] => value
+ * @param     { Storage }           storage
+ * */
+/**
+ * @class                           Storage
+ * @param     { Boolean }           useCookie           Use cookie or not
+ * @param     { ExceededCallback }  [exceededCallback]  Callback of QUOTA_EXCEEDED_ERROR,
+ * */
+const storage = new Storage(useCookie, exceededCallback)
+storage.set('key', 'value')
+storage.get('key')
+storage.keys()
+storage.forEach(callback)
+// ...
 ```
 
 when you want to set this module as external while you are developing another module, you should import it like this:
@@ -53,30 +86,37 @@ Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone
 <script src="https://unpkg.com/@livelybone/storage/lib/umd/<--module-->.js"></script>
 ```
 
-## Methods
-> `get`: `(key) => [Number, String, Object, Boolean]`
+## Shared methods
+`StorageValue: undefined|null|String|Number|Boolean|Object|Array`
 
-> `set`: `(key,value:[Number, String, Object, Boolean]) => void`
+> `get`: `(key: String) => StorageValue`
 
-> `delete`: `(key) => void`
+> `set`: `(key: String, value: StorageValue) => void`
+
+> `delete`: `(key: String) => void`
 
 > `clear`: `() => void`
 
-> `has`: `(key) => Boolean`
+> `has`: `(key: String) => Boolean`
 
-> `keys`: `() => Array<String>`
+> `keys`: `() => Array<String>|MapIterator`
 
-> `values`: `() => Array<Number, String, Object, Boolean>`
+> `values`: `() => Array<StorageValue>|MapIterator`
 
-> `entries`: `() => Array<{key, value}>`
+> `entries`: `() => Array<Object{key, value}>|MapIterator`
 
-> `forEach`: `(callback:(key, value, instance|class) => void) => void`
+> `forEach`: `(callback: (value: StorageValue, key: String, source: LocalStorage|Cookie|new Map())) => void) => void`
 
-### Storage | LocalStorage
-> `addHandler`: `(handler: ({event, key, oldValue, newValue}) => any) => wrappedHandler`
+## Particular methods of Storage, LocalStorage
+> `addHandler`: `(handler: ({
+    event: StorageEvent,
+    key: String,
+    oldValue: StorageValue,
+    newValue: StorageValue,
+  }) => any) => wrappedHandler`
 
 > `removeHandler`: `(handlers: Array<wrappedHandler>) => void`
 
 ## Attributes
 
-> `size`
+> `size: Number`

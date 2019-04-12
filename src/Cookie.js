@@ -1,4 +1,4 @@
-import { JSONParse } from './utils'
+import { parseJSON, stringifyJSON } from './utils'
 
 export default class Cookie {
   static get size() {
@@ -21,8 +21,16 @@ export default class Cookie {
     Cookie.keys.forEach(key => callback(Cookie.get(key), key, Cookie))
   }
 
+  /**
+   * @param { String }          key
+   * @param { StorageValue }    val
+   * @param { String|Number }   [maxAgeMs]
+   * @param { String }          [domain]
+   * @param { String }          [secure]
+   * @param { String }          [path]
+   * */
   static set(key, val, { maxAgeMs = 'Infinity', domain, secure, path } = {}) {
-    const value = JSON.stringify(typeof val === 'string' ? encodeURIComponent(val) : val)
+    const value = stringifyJSON(typeof val === 'string' ? encodeURIComponent(val) : val)
     let cookie = `${key}=${value}`
 
     const isSessionLevel = !maxAgeMs
@@ -30,7 +38,7 @@ export default class Cookie {
     if (!isSessionLevel) {
       const exp = new Date()
       // Expired after {ms}ms
-      const ms = maxAgeMs === 'Infinity' ? 365 * 24 * 60 * 60 * 1000 : +maxAgeMs
+      const ms = !isFinite(maxAgeMs) ? 365 * 24 * 60 * 60 * 1000 : +maxAgeMs
       exp.setTime(exp.getTime() + ms)
       const expires = exp.toUTCString()
 
@@ -48,7 +56,7 @@ export default class Cookie {
     const reg = new RegExp(`(^| )${key}=([^;]*)(;|$)`)
     const arr = document.cookie.match(reg)
     if (arr) {
-      const val = JSONParse(arr[2])
+      const val = parseJSON(arr[2])
       return typeof val === 'string' ? decodeURIComponent(val) : val
     }
     return null
@@ -59,7 +67,12 @@ export default class Cookie {
   }
 
   static delete(key) {
-    Cookie.set(key, Cookie.get(key), { maxAgeMs: -1 })
+    const has = Cookie.has(key)
+    if (has) {
+      Cookie.set(key, Cookie.get(key), { maxAgeMs: -1 })
+      return true
+    }
+    return false
   }
 
   static clear() {

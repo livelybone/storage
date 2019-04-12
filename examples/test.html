@@ -11,9 +11,14 @@
 <div>key is: <span id="key"></span></div>
 <button onclick="setKey()">set storage as local-storage</button>
 <button onclick="delKey()">del storage</button>
+<button onclick="exceed()">exceed</button>
 
 <script>
-var storage = new Storage.Storage(true)
+var storage = new Storage.Storage(true, (e, params, storage) => {
+  console.log(e, params, storage)
+  storage.clear()
+  storage.set(params[0], params[1])
+})
 var handler = storage.addHandler(handleStorage)
 
 getKey()
@@ -42,6 +47,14 @@ function setKey(val) {
 function delKey() {
   storage.delete('key1')
   getKey()
+}
+
+function exceed() {
+  var repeat = function (str, x) {
+    return new Array(x + 1).join(str)
+  }
+  var tooBig = repeat('x', 5 * 1024 * 1024 - 16) // each JS character is 2 bytes
+  storage.set('x', tooBig)
 }
 </script>
 </body>
