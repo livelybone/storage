@@ -18,7 +18,7 @@ export default class Cookie {
   }
 
   static forEach(callback) {
-    Cookie.keys.forEach(key => callback(Cookie.get(key), key, Cookie))
+    Cookie.keys().forEach(key => callback(Cookie.get(key), key, Cookie))
   }
 
   /**

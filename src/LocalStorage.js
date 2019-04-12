@@ -18,7 +18,7 @@ export default class LocalStorage {
   }
 
   static forEach(callback) {
-    LocalStorage.keys.forEach(key => callback(LocalStorage.get(key), key, LocalStorage))
+    LocalStorage.keys().forEach(key => callback(LocalStorage.get(key), key, LocalStorage))
   }
 
   static set(key, val) {
