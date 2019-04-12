@@ -1,7 +1,7 @@
 {
   "name": "@livelybone/storage",
-  "version": "1.5.2",
-  "description": "A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map",
+  "version": "1.5.3",
+  "description": "A module for localStorage, support custom solution of quota exceeded. When localStorage is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
   "unpkg": "./lib/umd/index.js",
@@ -22,6 +22,7 @@
     "Map",
     "support",
     "degrading",
+    "custom exceeded solution",
     "ie",
     "safari",
     "storage event"

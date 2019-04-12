@@ -7,7 +7,7 @@
 
 > `pkg.module supported`, which means that you can apply tree-shaking in you project
 
-A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map
+A module for localStorage, support custom solution of quota exceeded. When localStorage is not supported by browser, it will be degrading to use Cookie or Map
 
 You can store Objects directly like 
 > 1. Object `{ a: 1, b: '1' }`
