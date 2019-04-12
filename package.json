@@ -20,6 +20,8 @@
     "localStorage",
     "cookie",
     "Map",
+    "support",
+    "degrading",
     "ie",
     "safari",
     "storage event"
