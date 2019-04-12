@@ -9,10 +9,17 @@
 
 A module for localStorage, when it is not supported by browser, it will be degrading to use Cookie or Map
 
-You can store Objects directly like `{a: 1, b: '1'}`, `1`, `'true'`, `true`
+You can store Objects directly like 
+> 1. Object `{ a: 1, b: '1' }`
+> 2. Number `1`
+> 3. String `'true'`
+> 4. Boolean `true`
+> 5. undefined `undefined`
+> 6. null `null`
+> 7. Array `[1, 2]`
 
-Before store, this module will stringify the value you set (use `JSON.stringify`).
-Before return, it will parse(use `JSON.parse`) the value which you want get
+Before store, this module will stringify the value you set (use `stringifyJSON`).
+Before return, it will parse(use `parseJSON`) the value which you want get
 
 > You may need a polyfill for `Map` like babel-polyfill if you use it in `ie` browser
 
@@ -33,11 +40,12 @@ npm i -S @livelybone/storage
 ## Usage
 ```js
 /**
- * @import Cookie, a purely wrapper of Cookie
- * @import Storage, a wrapper of HTML5 localStorage dealt with Cookie or Map (Map default)
- * @import LocalStorage, a purely wrapper of  HTML5 localStorage
+ * @property Cookie, a purely wrapper of Cookie
+ * @property Storage, a wrapper of HTML5 localStorage dealt with Cookie or Map (Map default)
+ * @property LocalStorage, a purely wrapper of  HTML5 localStorage
+ * @property StorageUtils, some tool function about storage
  * */
-import {Cookie, Storage, LocalStorage} from '@livelybone/storage';
+import {Cookie, Storage, LocalStorage, StorageUtils} from '@livelybone/storage';
 
 Cookie.set('key', 'value')
 Cookie.get('key')
@@ -120,3 +128,24 @@ Use in html, see what your can use in [CDN: unpkg](https://unpkg.com/@livelybone
 ## Attributes
 
 > `size: Number`
+
+## StorageUtils
+```js
+const {
+  stringifyJSON,
+  parseJSON,
+  isStorageExceeded,
+  storageAvailable,
+  cookieAvailable,
+} = StorageUtils
+```
+
+> `stringifyJSON`: `(val: StorageValue) => String`
+
+> `parseJSON`: `(val: String) => StorageValue`
+
+> `isStorageExceeded`: `(err: Error) => Boolean`
+
+> `storageAvailable`: `() => Boolean`
+
+> `cookieAvailable`: `() => Boolean`

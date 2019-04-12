@@ -73,7 +73,7 @@ export class Storage {
     try {
       this.storage.set(key, val)
     } catch (e) {
-      if (StorageUtils.isExceeded(e) && this.exceededCallback) {
+      if (StorageUtils.isStorageExceeded(e) && this.exceededCallback) {
         this.exceededCallback(e, [key, val], this)
       } else throw e
     }

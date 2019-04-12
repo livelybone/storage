@@ -29,7 +29,7 @@ export function parseJSON(val) {
   }
 }
 
-export function isExceeded(err) {
+export function isStorageExceeded(err) {
   return err.code === 22 || err.name.toLowerCase().indexOf('quota') >= 0
 }
 
@@ -43,7 +43,7 @@ export function storageAvailable() {
     return isAvailable
   } catch (e) {
     // If it is QUOTA_EXCEEDED_ERROR, return true
-    return isExceeded(e)
+    return isStorageExceeded(e)
   }
 }
 
