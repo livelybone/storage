@@ -42,8 +42,10 @@ export function storageAvailable() {
     storage.removeItem(x)
     return isAvailable
   } catch (e) {
-    // If it is QUOTA_EXCEEDED_ERROR, return true
-    return isStorageExceeded(e)
+    // If the error is QUOTA_EXCEEDED_ERROR
+    // and length of localStorage is greater than 0
+    // return true
+    return isStorageExceeded(e) && window.localStorage.length > 0
   }
 }
 
