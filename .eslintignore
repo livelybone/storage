@@ -6,3 +6,5 @@
 **/*.test.js
 **/*.e2e.js
 **/webpack.**.js
+*.ts
+*.tsx
