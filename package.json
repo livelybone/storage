@@ -44,6 +44,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "commitizen": "^3.0.7",
     "conventional-changelog-cli": "^2.0.12",
+    "cross-env": "^5.2.0",
     "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
