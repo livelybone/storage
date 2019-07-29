@@ -97,9 +97,9 @@ export class LocalStorage {
 }
 
 export namespace StorageUtils {
-  function stringifyJSON(val: any): string
-  function parseJSON(jsonStr: string): any
-  function isStorageExceeded(err: Error): boolean
-  function storageAvailable(): boolean
-  function cookieAvailable(): boolean
+  export function stringifyJSON(val: any): string
+  export function parseJSON(jsonStr: string): any
+  export function isStorageExceeded(err: Error): boolean
+  export function storageAvailable(): boolean
+  export function cookieAvailable(): boolean
 }
