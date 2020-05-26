@@ -1,14 +1,20 @@
-/* eslint-disable no-param-reassign */
+import { singletonObj } from '@livelybone/singleton'
 import Cookie from './Cookie'
 import LocalStorage from './LocalStorage'
 import * as StorageUtils from './utils'
+import { ExceededCb, ForEachCb, StorageEvHandler } from './type'
 
 export { Cookie, LocalStorage, StorageUtils }
+export * from './type'
 
 /**
  * @class Storage
  * */
 export class Storage {
+  storage: any
+
+  exceededCallback?: ExceededCb<Storage>
+
   /**
    * @typedef   { Function }          ExceededCallback
    * @param     { Error }             error
@@ -19,7 +25,7 @@ export class Storage {
    * @param     { Boolean }           useCookie           Use cookie or not
    * @param     { ExceededCallback }  [exceededCallback]  Callback of QUOTA_EXCEEDED_ERROR,
    * */
-  constructor(useCookie, exceededCallback) {
+  constructor(useCookie?: boolean, exceededCallback?: ExceededCb<Storage>) {
     const getStorage = () => {
       if (StorageUtils.storageAvailable()) {
         return LocalStorage
@@ -27,8 +33,10 @@ export class Storage {
 
       if (typeof window !== 'undefined') {
         console.warn(
-          '(Storage) The Object localStorage isn\'t supported in your client,'
-          + ' methods `addHandler` and `removeHandler` will do nothing when you call it',
+          new Error(
+            "(Storage) The Object localStorage isn't supported in your client," +
+              ' methods `addHandler` and `removeHandler` will do nothing when you call it',
+          ),
         )
       }
 
@@ -44,9 +52,7 @@ export class Storage {
       return new Map()
     }
     this.storage = getStorage()
-    if (exceededCallback instanceof Function) {
-      this.exceededCallback = exceededCallback
-    }
+    if (exceededCallback) this.exceededCallback = exceededCallback
   }
 
   get size() {
@@ -65,11 +71,11 @@ export class Storage {
     return this.storage.entries()
   }
 
-  forEach(callback) {
+  forEach(callback: ForEachCb<any>) {
     this.storage.forEach(callback)
   }
 
-  set(key, val) {
+  set(key: string, val: any) {
     try {
       this.storage.set(key, val)
     } catch (e) {
@@ -79,15 +85,15 @@ export class Storage {
     }
   }
 
-  get(key) {
+  get(key: string) {
     return this.storage.get(key)
   }
 
-  has(key) {
+  has(key: string) {
     return this.storage.has(key)
   }
 
-  delete(key) {
+  delete(key: string) {
     return this.storage.delete(key)
   }
 
@@ -95,14 +101,55 @@ export class Storage {
     this.storage.clear()
   }
 
-  addHandler(storageHandler) {
+  addHandler(storageHandler: StorageEvHandler) {
     if (this.storage.addHandler) {
       return this.storage.addHandler(storageHandler)
     }
     return null
   }
 
-  removeHandler(handlers) {
+  removeHandler(handlers: EventHandlerNonNull | EventHandlerNonNull[]) {
     if (this.storage.removeHandler) this.storage.removeHandler(handlers)
+  }
+}
+
+export class StorageItem<Value = string> {
+  static StorageOptions: {
+    useCookie?: boolean
+    exceededCallback?: (
+      error: Error,
+      [key, value]: [string, any],
+      instance: Storage,
+    ) => void
+  } = { useCookie: true }
+
+  private readonly key: string = ''
+
+  private readonly storage: any
+
+  constructor(key: string, isCookie?: boolean) {
+    this.key = key
+    this.storage = isCookie
+      ? Cookie
+      : singletonObj(
+          'storage',
+          () =>
+            new Storage(
+              StorageItem.StorageOptions.useCookie,
+              StorageItem.StorageOptions.exceededCallback,
+            ),
+        )
+  }
+
+  set(val: Value) {
+    this.storage.set(this.key, val)
+  }
+
+  get(): Value | null {
+    return this.storage.get(this.key)
+  }
+
+  del() {
+    return this.storage.delete(this.key)
   }
 }

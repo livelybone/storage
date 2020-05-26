@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LocalStorage</title>
-  <script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
+  <title>Storage</title>
+
+  <!-- Inject some babel helpers for code running. it is not needed in a real babel project when you configure babel or there is no new feature of js -->
+  <!-- 为代码运行注入一些babel帮助函数。在真正的babel项目中，当已配置 babel 时，或者js没有新特性时，并不需要它 -->
+  <script src="https://cdn.jsdelivr.net/npm/@babel/polyfill/dist/polyfill.min.js"></script>
+
   <script src="../lib/umd/index.js"></script>
 </head>
 <body>
@@ -14,48 +18,48 @@
 <button onclick="exceed()">exceed</button>
 
 <script>
-var storage = new Storage.Storage(true, (e, params, storage) => {
-  console.log(e, params, storage)
-  storage.clear()
-  storage.set(params[0], params[1])
-})
-var handler = storage.addHandler(handleStorage)
+  var storage = new Storage.Storage(true, (e, params, storage) => {
+    console.log(e, params, storage)
+    storage.clear()
+    storage.set(params[0], params[1])
+  })
+  var handler = storage.addHandler(handleStorage)
 
-getKey()
+  getKey()
 
-function handleStorage(e) {
-  var key = e.key
-  var newV = e.newValue
-  if (key === 'key1') {
-    if (!newV) {
-      delKey()
-    } else {
-      setKey(newV)
+  function handleStorage(e) {
+    var key = e.key
+    var newV = e.newValue
+    if (key === 'key1') {
+      if (!newV) {
+        delKey()
+      } else {
+        setKey(newV)
+      }
     }
   }
-}
 
-function getKey() {
-  document.getElementById('key').innerText = storage.get('key1')
-}
-
-function setKey(val) {
-  storage.set('key1', val || 'local-storage')
-  getKey()
-}
-
-function delKey() {
-  storage.delete('key1')
-  getKey()
-}
-
-function exceed() {
-  var repeat = function (str, x) {
-    return new Array(x + 1).join(str)
+  function getKey() {
+    document.getElementById('key').innerText = storage.get('key1')
   }
-  var tooBig = repeat('x', 5 * 1024 * 1024 - 16) // each JS character is 2 bytes
-  storage.set('x', tooBig)
-}
+
+  function setKey(val) {
+    storage.set('key1', val || 'local-storage')
+    getKey()
+  }
+
+  function delKey() {
+    storage.delete('key1')
+    getKey()
+  }
+
+  function exceed() {
+    var repeat = function (str, x) {
+      return new Array(x + 1).join(str)
+    }
+    var tooBig = repeat('x', 5 * 1024 * 1024 - 16) // each JS character is 2 bytes
+    storage.set('x', tooBig)
+  }
 </script>
 </body>
 </html>

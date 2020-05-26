@@ -6,7 +6,7 @@
  * @desc JSON stringify
  * @param { StorageValue } val
  * */
-export function stringifyJSON(val) {
+export function stringifyJSON(val: any) {
   if (typeof val === 'number') {
     if (isNaN(val)) return 'NaN'
     if (!isFinite(val)) return 'Infinity'
@@ -18,7 +18,7 @@ export function stringifyJSON(val) {
  * @desc JSON parse
  * @param { String } val
  * */
-export function parseJSON(val) {
+export function parseJSON(val: string) {
   try {
     if (val === 'undefined') return undefined
     if (val === 'NaN') return NaN
@@ -29,7 +29,7 @@ export function parseJSON(val) {
   }
 }
 
-export function isStorageExceeded(err) {
+export function isStorageExceeded(err: any) {
   return err.code === 22 || err.name.toLowerCase().indexOf('quota') >= 0
 }
 

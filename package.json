@@ -1,17 +1,21 @@
 {
   "name": "@livelybone/storage",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "A module for localStorage, support custom solution of quota exceeded. When localStorage is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
   "unpkg": "./lib/umd/index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "build": "rimraf ./lib && cross-env NODE_ENV=production rollup -c",
-    "eslint": "eslint ./src",
-    "test": "npm run build && mocha ./test/index.spec.js",
-    "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "commit": "npx git-cz"
+    "build:js": "cross-env NODE_ENV=production rollup -c",
+    "build:dts": "cross-env NODE_ENV=production BUILD_ENV=dts rollup -c",
+    "dev": "rimraf ./lib && cross-env BUILD_ENV=watch node watch.js",
+    "build": "rimraf ./lib && npm run build:js",
+    "build:test": "rimraf ./test-lib && cross-env NODE_ENV=test rollup -c rollup.config.test.js --sourcemap",
+    "eslint": "eslint ./ --ext .ts,.js --fix",
+    "test": "npm run build:test && cross-env NODE_ENV=test istanbul cover node_modules/mocha/bin/_mocha -- ./test",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "commit": "git-cz"
   },
   "repository": {
     "type": "git",
@@ -19,47 +23,76 @@
   },
   "keywords": [
     "localStorage",
-    "cookie",
+    "oookie",
     "Map",
-    "support",
-    "degrading",
-    "deal exceeded",
-    "custom exceeded solution",
-    "ie",
-    "safari",
-    "storage event",
-    "storage"
+    "quota exceeded solution",
+    "storage event"
   ],
-  "author": "livelybone(2631541504@qq.com)",
+  "author": "2631541504@qq.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/livelybone/storage/issues"
   },
   "homepage": "http://livelybone.github.io/tool/storage/",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^9.0.0",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1",
+    "@babel/core": "^7.5.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/runtime": "^7.5.1",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.11.0",
+    "babel-plugin-istanbul": "^5.1.4",
+    "chai": "^4.2.0",
+    "chalk": "^2.4.2",
+    "chokidar": "^3.0.2",
     "commitizen": "^3.0.7",
     "conventional-changelog-cli": "^2.0.12",
     "cross-env": "^5.2.0",
+    "cross-spawn": "^6.0.5",
     "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "express": "^4.17.1",
+    "husky": "^3.0.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "lint-staged": "^9.1.0",
     "mocha": "^5.2.0",
-    "rollup": "^1.10.0",
-    "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-commonjs": "^9.3.4",
+    "prettier": "^1.18.2",
+    "rollup": "1.7.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-dts": "^1.1.5",
     "rollup-plugin-license": "^0.8.1",
-    "rollup-plugin-node-resolve": "^4.2.3",
-    "rollup-plugin-uglify": "^6.0.2"
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-uglify": "^6.0.2",
+    "typescript": "^3.5.2"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint --fix",
+      "git update-index --again"
+    ],
+    "**/*.scss": [
+      "prettier --write",
+      "git update-index --again"
+    ]
+  },
+  "dependencies": {
+    "@livelybone/singleton": "^1.1.3"
   }
 }

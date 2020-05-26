@@ -1,17 +1,25 @@
 import fs from 'fs'
 import path from 'path'
-import babel from 'rollup-plugin-babel'
-import commonjs from 'rollup-plugin-commonjs'
+import dts from 'rollup-plugin-dts'
 import license from 'rollup-plugin-license'
-import resolve from 'rollup-plugin-node-resolve'
 import { uglify } from 'rollup-plugin-uglify'
+import packageConf from './package.json'
+import baseConf from './rollup.config.base'
+
+const isWatch = process.env.BUILD_ENV === 'watch'
+const isDts = process.env.BUILD_ENV === 'dts'
 
 const formats = ['es', 'umd']
 
 function getEntries() {
-  const reg = /\.js$/
-  return fs.readdirSync(path.resolve(__dirname, './src'))
-    .filter(filename => reg.test(filename) && filename !== 'utils.js' && !fs.statSync(path.resolve(__dirname, './src', filename)).isDirectory())
+  const reg = /\.ts$/
+  return fs
+    .readdirSync(path.resolve(__dirname, './src'))
+    .filter(
+      filename =>
+        reg.test(filename) &&
+        !fs.statSync(path.resolve(__dirname, './src', filename)).isDirectory(),
+    )
     .map(filename => ({
       name: filename.replace(reg, ''),
       filename: path.resolve(__dirname, './src', filename),
@@ -24,24 +32,12 @@ const conf = entry => ({
   output: entry.formats.map(format => ({
     file: `./lib/${format}/${entry.name}.js`,
     format,
-    name: entry.name === 'index' ? 'Storage' : entry.name,
+    name: entry.name === 'index' ? 'Storage' : `${entry.name}Storage`,
   })),
+  external: entry.external ? Object.keys(packageConf.dependencies || {}) : [],
   plugins: [
-    resolve(),
-    commonjs(),
-    babel({
-      babelrc: false,
-      runtimeHelpers: true,
-      externalHelpers: false,
-      presets: [
-        ['env', { modules: false }],
-        'stage-2',
-      ],
-      plugins: [
-        'external-helpers',
-      ],
-    }),
-    (entry.needUglify !== false && uglify()),
+    ...baseConf.plugins,
+    entry.needUglify !== false && uglify(),
     license({
       banner: `Bundle of <%= pkg.name %>
                Generated: <%= moment().format('YYYY-MM-DD') %>
@@ -52,7 +48,31 @@ const conf = entry => ({
   ],
 })
 
-export default [
-  { name: 'index', filename: './src/index.js', formats: ['es'], needUglify: false },
-  ...getEntries(),
-].map(conf)
+// eslint-disable-next-line no-nested-ternary
+export default isWatch
+  ? [
+      {
+        name: 'index',
+        filename: './src/index.ts',
+        formats: ['umd'],
+        needUglify: false,
+      },
+    ].map(conf)
+  : isDts
+  ? [
+      {
+        input: './src/index.ts',
+        output: [{ file: './index.d.ts', format: 'es' }],
+        plugins: [dts()],
+      },
+    ]
+  : [
+      {
+        name: 'index',
+        filename: './src/index.ts',
+        formats: ['es'],
+        needUglify: false,
+        external: true,
+      },
+      ...getEntries(),
+    ].map(conf)

@@ -1,105 +1,204 @@
-interface CustomStorageEvent {
-  key: string
+interface CookieSetOptions {
+  /**
+   * Default: 'Infinity'
+   * */
+  maxAgeMs?: 'Infinity' | number
+  domain?: string
+  /**
+   * 'secure' or ''
+   *
+   * Default: ''
+   * */
+  secure?: string
+  /**
+   * Default: '/'
+   * */
+  path?: string
+}
+
+declare type ForEachCb<T> = (val: any, key: string, ctx: T) => void
+
+interface StorageEv {
+  key: string | null
   oldValue: any
   newValue: any
   event: StorageEvent
 }
 
-type StorageEventHandler = (ev: CustomStorageEvent) => void
+declare type StorageEvHandler = (ev: StorageEv) => void
+declare type ExceededCb<T> = (
+  err: Error &
+    {
+      [k in any]: any
+    },
+  currKeyValue: [string, any],
+  ctx: T,
+) => void
 
-type HandlerForRemove = (ev: StorageEvent) => void
+declare class Cookie {
+  static get size(): number
 
-export class Storage {
-  constructor(
-    useCookie?: boolean,
+  static keys(): string[]
+
+  static values(): (string | null)[]
+
+  static entries(): (string | null)[][]
+
+  static forEach(callback: ForEachCb<Cookie>): void
+
+  /**
+   * @param { String }          key
+   * @param { StorageValue }    val
+   * @param { String|Number }   [maxAgeMs]
+   * @param { String }          [domain]
+   * @param { String }          [secure]
+   * @param { String }          [path]
+   * */
+  static set(
+    key: string,
+    val: any,
+    { maxAgeMs, domain, secure, path }?: CookieSetOptions,
+  ): void
+
+  static get(key: string): string | null
+
+  static has(key: string): boolean
+
+  static delete(key: string): boolean
+
+  static clear(): void
+}
+
+declare class LocalStorage {
+  static get size(): number
+
+  static keys(): string[]
+
+  static values(): any[]
+
+  static entries(): any[][]
+
+  static forEach(callback: ForEachCb<LocalStorage>): void
+
+  static set(key: string, val: any): void
+
+  static get(key: string): any
+
+  static has(key: string): boolean
+
+  static delete(key: string): boolean
+
+  static clear(): void
+
+  static addHandler(
+    storageHandler: StorageEvHandler,
+  ): ((e: StorageEvent) => void) | null
+
+  static removeHandler(
+    handlers: EventHandlerNonNull | EventHandlerNonNull[],
+  ): void
+}
+
+declare namespace utils {
+  /**
+   * @typedef { undefined|null|String|Number|Boolean|Object|Array }  StorageValue
+   * */
+  /**
+   * @desc JSON stringify
+   * @param { StorageValue } val
+   * */
+  export declare function stringifyJSON(val: any): string
+
+  /**
+   * @desc JSON parse
+   * @param { String } val
+   * */
+  export declare function parseJSON(val: string): any
+
+  export declare function isStorageExceeded(err: any): boolean
+
+  export declare function storageAvailable(): boolean
+
+  export declare function cookieAvailable(): string | boolean
+}
+
+/**
+ * @class Storage
+ * */
+declare class Storage {
+  storage: any
+
+  exceededCallback?: ExceededCb<Storage>
+
+  /**
+   * @typedef   { Function }          ExceededCallback
+   * @param     { Error }             error
+   * @param     { Array }             params              params[0] => key; params[1] => value
+   * @param     { Storage }           storage
+   * */
+  /**
+   * @param     { Boolean }           useCookie           Use cookie or not
+   * @param     { ExceededCallback }  [exceededCallback]  Callback of QUOTA_EXCEEDED_ERROR,
+   * */
+  constructor(useCookie?: boolean, exceededCallback?: ExceededCb<Storage>)
+
+  get size(): any
+
+  keys(): any
+
+  values(): any
+
+  entries(): any
+
+  forEach(callback: ForEachCb<any>): void
+
+  set(key: string, val: any): void
+
+  get(key: string): any
+
+  has(key: string): any
+
+  delete(key: string): any
+
+  clear(): void
+
+  addHandler(storageHandler: StorageEvHandler): any
+
+  removeHandler(handlers: EventHandlerNonNull | EventHandlerNonNull[]): void
+}
+
+declare class StorageItem<Value = string> {
+  static StorageOptions: {
+    useCookie?: boolean
     exceededCallback?: (
       error: Error,
       [key, value]: [string, any],
       instance: Storage,
-    ) => void,
-  )
+    ) => void
+  }
 
-  size(): number
+  private readonly key
 
-  keys(): string[]
+  private readonly storage
 
-  values(): any[]
+  constructor(key: string, isCookie?: boolean)
 
-  entries(): [string, any][]
+  set(val: Value): void
 
-  forEach(cb: (value: any, key: string, instance: Storage) => any): void
+  get(): Value | null
 
-  set(key: string, value: any): void
-
-  get(key: string): any
-
-  has(key: string): boolean
-
-  delete(key: string): boolean
-
-  clear(): void
-
-  addHandler(handler: StorageEventHandler): HandlerForRemove
-
-  removeHandler(handler: HandlerForRemove): void
+  del(): any
 }
 
-export class Cookie {
-  static size(): number
-
-  static keys(): string[]
-
-  static values(): any[]
-
-  static entries(): [string, any][]
-
-  static forEach(
-    cb: (value: any, key: string, instance: Storage) => any,
-  ): void
-
-  static set(key: string, value: any): void
-
-  static get(key: string): any
-
-  static has(key: string): boolean
-
-  static delete(key: string): boolean
-
-  static clear(): void
-}
-
-export class LocalStorage {
-  static size(): number
-
-  static keys(): string[]
-
-  static values(): any[]
-
-  static entries(): [string, any][]
-
-  static forEach(
-    cb: (value: any, key: string, instance: Storage) => any,
-  ): void
-
-  static set(key: string, value: any): void
-
-  static get(key: string): any
-
-  static has(key: string): boolean
-
-  static delete(key: string): boolean
-
-  static clear(): void
-
-  static addHandler(handler: StorageEventHandler): HandlerForRemove
-
-  static removeHandler(handler: HandlerForRemove): void
-}
-
-export namespace StorageUtils {
-  export function stringifyJSON(val: any): string
-  export function parseJSON(jsonStr: string): any
-  export function isStorageExceeded(err: Error): boolean
-  export function storageAvailable(): boolean
-  export function cookieAvailable(): boolean
+export {
+  Cookie,
+  CookieSetOptions,
+  ExceededCb,
+  ForEachCb,
+  LocalStorage,
+  Storage,
+  StorageEv,
+  StorageEvHandler,
+  StorageItem,
+  utils as StorageUtils,
 }

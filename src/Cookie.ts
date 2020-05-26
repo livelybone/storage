@@ -1,3 +1,4 @@
+import { CookieSetOptions, ForEachCb } from './type'
 import { parseJSON, stringifyJSON } from './utils'
 
 export default class Cookie {
@@ -5,8 +6,8 @@ export default class Cookie {
     return Cookie.keys().length
   }
 
-  static keys() {
-    return document.cookie.match(/[^\s=;]+(?==)/g)
+  static keys(): string[] {
+    return document.cookie.match(/[^\s=;]+(?==)/g) || []
   }
 
   static values() {
@@ -14,10 +15,10 @@ export default class Cookie {
   }
 
   static entries() {
-    return Cookie.keys().map(key => ([key, Cookie.get(key)]))
+    return Cookie.keys().map(key => [key, Cookie.get(key)])
   }
 
-  static forEach(callback) {
+  static forEach(callback: ForEachCb<Cookie>) {
     Cookie.keys().forEach(key => callback(Cookie.get(key), key, Cookie))
   }
 
@@ -29,8 +30,12 @@ export default class Cookie {
    * @param { String }          [secure]
    * @param { String }          [path]
    * */
-  static set(key, val, { maxAgeMs = 'Infinity', domain, secure, path } = {}) {
-    const value = stringifyJSON(typeof val === 'string' ? encodeURIComponent(val) : val)
+  static set(
+    key: string,
+    val: any,
+    { maxAgeMs = 'Infinity', domain, secure, path }: CookieSetOptions = {},
+  ) {
+    const value = encodeURIComponent(stringifyJSON(val))
     let cookie = `${key}=${value}`
 
     const isSessionLevel = !maxAgeMs
@@ -38,7 +43,7 @@ export default class Cookie {
     if (!isSessionLevel) {
       const exp = new Date()
       // Expired after {ms}ms
-      const ms = !isFinite(maxAgeMs) ? 365 * 24 * 60 * 60 * 1000 : +maxAgeMs
+      const ms = !isFinite(+maxAgeMs) ? 365 * 24 * 60 * 60 * 1000 : +maxAgeMs
       exp.setTime(exp.getTime() + ms)
       const expires = exp.toUTCString()
 
@@ -52,21 +57,20 @@ export default class Cookie {
     document.cookie = cookie
   }
 
-  static get(key) {
+  static get(key: string) {
     const reg = new RegExp(`(^| )${key}=([^;]*)(;|$)`)
     const arr = document.cookie.match(reg)
     if (arr) {
-      const val = parseJSON(arr[2])
-      return typeof val === 'string' ? decodeURIComponent(val) : val
+      return decodeURIComponent(parseJSON(arr[2]))
     }
     return null
   }
 
-  static has(key) {
+  static has(key: string) {
     return Cookie.keys().some(k => k === key)
   }
 
-  static delete(key) {
+  static delete(key: string) {
     const has = Cookie.has(key)
     if (has) {
       Cookie.set(key, Cookie.get(key), { maxAgeMs: -1 })
@@ -76,7 +80,7 @@ export default class Cookie {
   }
 
   static clear() {
-    Cookie.keys().forEach((key) => {
+    Cookie.keys().forEach(key => {
       Cookie.delete(key)
     })
   }
