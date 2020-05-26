@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 interface CookieSetOptions {
   /**
    * Default: 'Infinity'
@@ -99,27 +100,40 @@ declare class LocalStorage {
   ): void
 }
 
+/**
+ * @typedef { undefined|null|String|Number|Boolean|Object|Array }  StorageValue
+ * */
+/**
+ * @desc JSON stringify
+ * @param { StorageValue } val
+ * */
+declare function stringifyJSON(val: any): string
+
+/**
+ * @desc JSON parse
+ * @param { String } val
+ * */
+declare function parseJSON(val: string): any
+
+declare function isStorageExceeded(err: any): boolean
+
+declare function storageAvailable(): boolean
+
+declare function cookieAvailable(): string | boolean
+
+declare const utils_stringifyJSON: typeof stringifyJSON
+declare const utils_parseJSON: typeof parseJSON
+declare const utils_isStorageExceeded: typeof isStorageExceeded
+declare const utils_storageAvailable: typeof storageAvailable
+declare const utils_cookieAvailable: typeof cookieAvailable
 declare namespace utils {
-  /**
-   * @typedef { undefined|null|String|Number|Boolean|Object|Array }  StorageValue
-   * */
-  /**
-   * @desc JSON stringify
-   * @param { StorageValue } val
-   * */
-  export declare function stringifyJSON(val: any): string
-
-  /**
-   * @desc JSON parse
-   * @param { String } val
-   * */
-  export declare function parseJSON(val: string): any
-
-  export declare function isStorageExceeded(err: any): boolean
-
-  export declare function storageAvailable(): boolean
-
-  export declare function cookieAvailable(): string | boolean
+  export {
+    utils_stringifyJSON as stringifyJSON,
+    utils_parseJSON as parseJSON,
+    utils_isStorageExceeded as isStorageExceeded,
+    utils_storageAvailable as storageAvailable,
+    utils_cookieAvailable as cookieAvailable,
+  }
 }
 
 /**
