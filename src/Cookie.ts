@@ -61,7 +61,7 @@ export default class Cookie {
     const reg = new RegExp(`(^| )${key}=([^;]*)(;|$)`)
     const arr = document.cookie.match(reg)
     if (arr) {
-      return decodeURIComponent(parseJSON(arr[2]))
+      return parseJSON(decodeURIComponent(arr[2]))
     }
     return null
   }

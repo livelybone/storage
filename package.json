@@ -1,6 +1,6 @@
 {
   "name": "@livelybone/storage",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "A module for localStorage, support custom solution of quota exceeded. When localStorage is not supported by browser, it will be degrading to use Cookie or Map",
   "main": "./lib/umd/index.js",
   "module": "./lib/es/index.js",
